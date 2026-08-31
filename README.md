@@ -1,6 +1,6 @@
 # dsh-local-font-picker
 
-DeepSeek Harness（DSH）Web UI 用のクライアント専用プラグイン（DSH `0.1.2-alpha.2` 以降に対応。`@deepseek-ai/dsh-client-store` ベースの Slot store 契約を使用）。
+DeepSeek Harness（DSH）Web UI 用のクライアント専用プラグイン（DSH `0.1.2-alpha.2` で動作確認済み。後続バージョンは互換性未保証。`@deepseek-ai/dsh-client-store` ベースの Slot store 契約を使用）。
 PC にインストール済みのフォントを `window.queryLocalFonts()`（Local Font Access API）で列挙し、UI フォントとコードフォントを DSH の公式 Theme API / Slot API で変更します。
 
 - DSH 本体の改変なし（静的プラグイン、ビルド不要）
