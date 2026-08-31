@@ -10,7 +10,7 @@ window.__ModuleLoader__.load({
     const React = require("react");
     const { jsx, jsxs } = require("react/jsx-runtime");
     const { defineStore } =
-      require("@deepseek-ai/dsh-client-runtime/client");
+      require("@deepseek-ai/dsh-client-store");
 
     const PLUGIN_ID = "dsh-local-font-picker";
     const STORAGE_KEY = "dsh-local-font-picker:v1";
@@ -119,23 +119,27 @@ window.__ModuleLoader__.load({
       return [...families].sort(collator.compare);
     }
 
-    const store = defineStore({
-      init: () => ({
-        ui: "",
-        code: "",
-        revision: -1
-      }),
+    // The Slot registry owns store instances; keep only the factory here so a
+    // plugin reload cannot reuse a module-global handle.
+    function createFontPickerStore() {
+      return defineStore({
+        init: () => ({
+          ui: "",
+          code: "",
+          revision: -1
+        }),
 
-      actions: {
-        sync: (draft, ui, code, revision) => {
-          if (revision <= draft.revision) return;
+        actions: {
+          sync: (draft, ui, code, revision) => {
+            if (revision <= draft.revision) return;
 
-          draft.ui = ui;
-          draft.code = code;
-          draft.revision = revision;
+            draft.ui = ui;
+            draft.code = code;
+            draft.revision = revision;
+          }
         }
-      }
-    });
+      });
+    }
 
     const styles = {
       container: {
@@ -440,6 +444,7 @@ window.__ModuleLoader__.load({
     ];
 
     function apply(ctx) {
+      const fontPickerStore = createFontPickerStore();
       let prefs = readPrefs();
       let revision = 0;
       let bound;
@@ -513,7 +518,7 @@ window.__ModuleLoader__.load({
               name: "settings.general.item",
               id: PLUGIN_ID,
               order: 30,
-              store,
+              store: fontPickerStore,
 
               inject: (actions) => {
                 bound = actions;
