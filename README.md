@@ -35,3 +35,7 @@ node --check index.js && node --check client.js
 
 - Local Font Access API は Chrome / Edge デスクトップ向け（Baseline 未達）。Firefox 等では直接入力モードになります
 - 設定はブラウザの origin ごとに別管理（`localStorage`）
+
+## ライセンス
+
+MIT License。詳細は [LICENSE](LICENSE) を参照してください。

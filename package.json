@@ -2,6 +2,7 @@
   "name": "dsh-local-font-picker",
   "version": "0.2.0",
   "private": true,
+  "license": "MIT",
   "description": "Pick installed local fonts for the DeepSeek Harness Web UI.",
   "type": "module",
   "main": "index.js",
