@@ -3,7 +3,17 @@
   "version": "0.2.0",
   "private": true,
   "license": "MIT",
-  "description": "Pick installed local fonts for the DeepSeek Harness Web UI.",
+  "description": "Community DSH plugin for selecting installed local UI and code fonts in the DeepSeek Harness Web UI.",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "fonts",
+    "local-font-access"
+  ],
+  "engines": {
+    "dsh": "0.1.6-alpha.2 || 0.1.7-alpha.2 || 0.1.7-rc.1 || 0.1.7-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1"
+  },
   "type": "module",
   "main": "index.js",
   "exports": {
@@ -20,6 +30,7 @@
     "check": "node --check index.js && node --check client.js"
   },
   "dsh": {
+    "manifestVersion": 1,
     "bundle": {
       "patch": "./cordis.patch.yml"
     },
