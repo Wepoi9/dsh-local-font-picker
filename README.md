@@ -28,7 +28,7 @@ Latest tested DSH version: **0.2.1-alpha.1**.
 | 0.1.7-rc.2 | Plugin load, inventory visibility, and font application verified |
 | 0.2.0-rc.1 | Plugin load, inventory visibility, and font application verified |
 | 0.2.0-rc.2 | Plugin load, inventory visibility, and font application verified |
-| 0.2.1-alpha.1 | Plugin load, inventory visibility, and font application verified; E2E re-verified against current main 566a1b7 on 2026-10-07: clean plugin load, Settings rows visible, zero console errors, font commit, reload restore, and reset verified |
+| 0.2.1-alpha.1 | Plugin load, inventory visibility, and font application verified; E2E re-verified against current main 566a1b7 on 2026-10-07: clean plugin load, Settings rows visible, zero console errors, local-font permission granted then 107 PC fonts listed, UI and code fonts applied and restored after reload, and reset to defaults verified |
 
 Newer DSH versions are not assumed compatible until verified.
 
