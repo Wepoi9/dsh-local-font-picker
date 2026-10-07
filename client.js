@@ -18,7 +18,7 @@ window.__ModuleLoader__.load({
 
     // The plugin renders its own copy, so it picks a language from the browser
     // preferences instead of following the DSH Language setting. Only ja-* selects
-    // Japanese; anything else, including a missing navigator, resolves to English.
+    // Japanese; anything else, including a non-browser host, resolves to English.
     const COPY = {
       ja: {
         placeholder: "既定フォント",
@@ -75,6 +75,8 @@ window.__ModuleLoader__.load({
     };
 
     function pickCopy() {
+      if (typeof window === "undefined") return COPY.en;
+
       try {
         const tags = [
           ...(navigator.languages ?? []),
