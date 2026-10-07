@@ -88,8 +88,12 @@ window.__ModuleLoader__.load({
 
           const primary = tag.toLowerCase().split("-")[0];
 
-          if (primary === "ja") return COPY.ja;
-          if (primary) return COPY.en;
+          if (!primary) continue;
+
+          // The first usable preference decides, matching the DSH locale
+          // resolver: a browser listing English first shows English even when
+          // Japanese is installed as a secondary language.
+          return primary === "ja" ? COPY.ja : COPY.en;
         }
       } catch {
         // No navigator: fall back to English.
