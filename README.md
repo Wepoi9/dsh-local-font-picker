@@ -1,45 +1,84 @@
 # dsh-local-font-picker
 
-DeepSeek Harness（DSH）Web UI 用のクライアント専用プラグイン（DSH `0.1.6-alpha.2` で契約互換性を確認済み、`0.1.7-alpha.2` / `0.1.7-rc.1` / `0.1.7-rc.2` / `0.2.0-rc.1` / `0.2.0-rc.2` / `0.2.1-alpha.1` でプラグイン読み込み・一覧表示・フォント反映を確認済み。後続バージョンは互換性未保証。`@deepseek-ai/dsh-client-store` ベースの Slot store 契約を使用）。
-PC にインストール済みのフォントを `window.queryLocalFonts()`（Local Font Access API）で列挙し、UI フォントとコードフォントを DSH の公式 Theme API / Slot API で変更します。
+English | [日本語](README.ja.md)
 
-- DSH 本体の改変なし（静的プラグイン、ビルド不要）
-- Host 側コードは no-op（`index.js`）
-- 選定したフォント名だけを `localStorage` に保存（フォントファイルの読み込み・複製は行わない）
-- 一覧 API が使えないブラウザではフォント名の直接入力で同様に機能する
+A community plugin for the DeepSeek Harness (DSH) Web UI that lets you choose installed local fonts for the interface and code surfaces.
 
-## 動作
+> This is a community-maintained plugin, not part of the DeepSeek Harness core distribution.
 
-- 設定UI：`Settings → General → フォント`
-- 「PCフォントを読み込む」でローカルフォント一覧を取得（初回はブラウザのアクセス確認が表示されます）
-- 選択したフォントは `ctx.theme.overrideTokens()` によるトークン上書き（`--dsw-font-family` / `--ds-font-family-code` / `--dsw-font-mono`）で即時反映
-- 「既定に戻す」で上書きを解除し、保存も削除する
+## What it does
 
-## 導入
+- Lists locally installed fonts through the Local Font Access API (`window.queryLocalFonts()`).
+- Applies separate UI and code font choices through DSH Theme and Slot APIs.
+- Stores only the selected font family names in browser `localStorage`.
+- Falls back to manual font-name entry when the Local Font Access API is unavailable.
+- Requires no changes to the DSH source tree and no plugin build step.
 
-プラグインディレクトリを DSH profile に追加します（ローカルディレクトリ形式）：
+The host entry (`index.js`) is intentionally a no-op. All behavior runs in the Web client.
 
+## Compatibility
+
+Latest tested DSH version: **0.2.1-alpha.1**.
+
+| DSH version | Verification |
+| --- | --- |
+| 0.1.6-alpha.2 | Slot/Theme contract compatibility, unload/reload cleanup, and saved-setting restore verified |
+| 0.1.7-alpha.2 | Plugin load, inventory visibility, and font application verified |
+| 0.1.7-rc.1 | Plugin load, inventory visibility, and font application verified |
+| 0.1.7-rc.2 | Plugin load, inventory visibility, and font application verified |
+| 0.2.0-rc.1 | Plugin load, inventory visibility, and font application verified |
+| 0.2.0-rc.2 | Plugin load, inventory visibility, and font application verified |
+| 0.2.1-alpha.1 | Plugin load, inventory visibility, and font application verified |
+
+Newer DSH versions are not assumed compatible until verified.
+
+## Install
+
+Add a local checkout of this repository to the target DSH profile:
+
+```sh
+dsh plugin --profile web add <absolute-path-to-this-repository>
 ```
-dsh plugin --profile web add <プラグインディレクトリのパス>
+
+Restart DSH Web after installation.
+
+## Usage
+
+Open **Settings → General → Fonts**.
+
+- Use **Load local fonts** to request access to the browser's local font list.
+- Select or type an installed font family for the UI font and code font.
+- Use **Reset to default** to remove the overrides and stored selections.
+
+The current plugin UI copy is Japanese; the functionality itself is locale-independent.
+
+## Privacy and permissions
+
+Using **Load local fonts** invokes the browser Local Font Access API and may show a permission prompt. The browser can expose installed font metadata to this page after permission is granted.
+
+This plugin:
+
+- does not read or copy font files;
+- does not upload font data;
+- does not make network requests;
+- stores only the selected font family names in `localStorage`, scoped to the current browser origin.
+
+## Limitations
+
+- Local Font Access is primarily available in Chromium-based desktop browsers. Other browsers can still use manual font-name entry.
+- Settings are stored per browser origin.
+- DSH is still evolving rapidly, so client extension contracts can change between prerelease versions.
+
+## Check
+
+```sh
+npm run check
 ```
 
-その後 DSH Web を再起動します（`dsh --profile web --host 127.0.0.1 --port 3080`）。
+## Contributing
 
-## 確認
+Bug reports and focused pull requests are welcome. Please include the DSH version, browser, operating system, reproduction steps, and expected/actual behavior when reporting a compatibility issue.
 
-```
-node --check index.js && node --check client.js
-```
+## License
 
-DSH `0.1.6-alpha.2` では、`settings.general.item`、Slot API、Theme `overrideTokens()`、Client Module Loader の互換性と、クライアント unload/reload 時の Theme 上書き解放・保存設定の再適用を確認済みです。
-
-DSH `0.1.7-alpha.2` / `0.1.7-rc.1` / `0.1.7-rc.2` / `0.2.0-rc.1` / `0.2.0-rc.2` / `0.2.1-alpha.1` では、プラグイン読み込み・一覧表示・フォント反映を確認済みです。
-
-## 制約
-
-- Local Font Access API は Chrome / Edge デスクトップ向け（Baseline 未達）。Firefox 等では直接入力モードになります
-- 設定はブラウザの origin ごとに別管理（`localStorage`）
-
-## ライセンス
-
-MIT License。詳細は [LICENSE](LICENSE) を参照してください。
+MIT. See [LICENSE](LICENSE).
