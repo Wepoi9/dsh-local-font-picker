@@ -46,15 +46,17 @@ Restart DSH Web after installation.
 
 Open **Settings → General → Fonts**.
 
-- Use **Load local fonts** to request access to the browser's local font list.
+- Use **Load PC fonts** to request access to the browser's local font list.
 - Select or type an installed font family for the UI font and code font.
 - Use **Reset to default** to remove the overrides and stored selections.
 
-The current plugin UI copy is Japanese; the functionality itself is locale-independent.
+Button and status labels follow the copy language described above: the English list shows **Load PC fonts**, Japanese shows **PCフォントを読み込む**, and the same applies to the rest of the row.
+
+Copy language follows the browser's preferred languages, not the DSH Language setting. A `ja` primary language subtag renders Japanese; anything else renders English.
 
 ## Privacy and permissions
 
-Using **Load local fonts** invokes the browser Local Font Access API and may show a permission prompt. The browser can expose installed font metadata to this page after permission is granted.
+Using **Load PC fonts** invokes the browser Local Font Access API and may show a permission prompt. The browser can expose installed font metadata to this page after permission is granted.
 
 This plugin:
 
@@ -68,6 +70,7 @@ This plugin:
 - Local Font Access is primarily available in Chromium-based desktop browsers. Other browsers can still use manual font-name entry.
 - Settings are stored per browser origin.
 - DSH is still evolving rapidly, so client extension contracts can change between prerelease versions.
+- The copy language is decided once when the row module loads. Changing the browser's preferred languages takes effect on the next page reload.
 
 ## Check
 
