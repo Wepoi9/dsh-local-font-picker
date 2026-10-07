@@ -52,7 +52,7 @@ Open **Settings → General → Fonts**.
 
 Button and status labels follow the copy language described above: the English list shows **Load PC fonts**, Japanese shows **PCフォントを読み込む**, and the same applies to the rest of the row.
 
-Copy language follows the browser's preferred languages, not the DSH Language setting. A `ja` primary language subtag renders Japanese; anything else renders English.
+Copy language follows the browser's preferred languages, not the DSH Language setting. The first usable preference decides: `ja` renders Japanese, anything else renders English.
 
 ## Privacy and permissions
 
