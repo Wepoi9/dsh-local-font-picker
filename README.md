@@ -18,7 +18,7 @@ The host entry (`index.js`) is intentionally a no-op. All behavior runs in the W
 
 ## Compatibility
 
-Latest tested DSH version: **0.2.1-alpha.1**.
+Latest DSH version with recorded runtime verification: **0.2.1-alpha.1**. The package manifest also declares **0.2.1-alpha.2** as a compatibility target; it has not yet been runtime-verified.
 
 | DSH version | Verification |
 | --- | --- |
@@ -29,8 +29,9 @@ Latest tested DSH version: **0.2.1-alpha.1**.
 | 0.2.0-rc.1 | Plugin load, inventory visibility, and font application verified |
 | 0.2.0-rc.2 | Plugin load, inventory visibility, and font application verified |
 | 0.2.1-alpha.1 | Plugin load, inventory visibility, and font application verified; E2E re-verified against current main 566a1b7 on 2026-10-07: clean plugin load, Settings rows visible, zero console errors, local-font permission granted then 107 PC fonts listed, UI and code fonts applied and restored after reload, and reset to defaults verified |
+| 0.2.1-alpha.2 | Declared in `engines.dsh`; source-level compatibility reviewed, but plugin load, font application, persistence, and reset have **not** been runtime-verified on this version |
 
-Newer DSH versions are not assumed compatible until verified.
+DSH **0.2.1-alpha.2** adds built-in font-family settings. Interaction between the built-in settings and this plugin's Theme token overrides remains **untested**; competing settings may produce confusing display results. Other newer DSH versions are not assumed compatible until verified.
 
 ## Install
 
