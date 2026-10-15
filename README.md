@@ -9,8 +9,8 @@ A community plugin for the DeepSeek Harness (DSH) Web UI that lets you choose in
 ## What it does
 
 - Lists locally installed fonts through the Local Font Access API (`window.queryLocalFonts()`).
-- Applies separate UI and code font choices through DSH Theme and Slot APIs.
-- Stores only the selected font family names in browser `localStorage`.
+- Applies the selected UI and code fonts through the built-in DSH Theme API (`ctx.theme.setFontFamily(role, value)`); persistence, CSS application, and reload restore belong to the DSH core settings.
+- Keeps no settings of its own — no `localStorage`, no Theme token overrides. The built-in font settings and this plugin row always read and write the same core state.
 - Falls back to manual font-name entry when the Local Font Access API is unavailable.
 - Requires no changes to the DSH source tree and no plugin build step.
 
@@ -18,7 +18,9 @@ The host entry (`index.js`) is intentionally a no-op. All behavior runs in the W
 
 ## Compatibility
 
-Latest DSH version with recorded runtime verification: **0.2.1-alpha.3**, runtime-verified against the live app on 2026-10-15. The package manifest also declares **0.2.1-alpha.2** as a compatibility target; that declaration has not yet been runtime-verified.
+Since **0.3.0** this plugin delegates font state to the DSH core (`ctx.theme.setFontFamily`); it stores nothing of its own. Earlier plugin releases kept their own copy in `localStorage` plus Theme token overrides. The table records runtime verification per listed state; rows up to 0.2.1-alpha.1 were recorded on the pre-0.3.0 mechanism.
+
+Latest DSH version with recorded runtime verification: **0.2.1-alpha.3**, runtime-verified against the live app on 2026-10-15.
 
 | DSH version | Verification |
 | --- | --- |
@@ -29,10 +31,10 @@ Latest DSH version with recorded runtime verification: **0.2.1-alpha.3**, runtim
 | 0.2.0-rc.1 | Plugin load, inventory visibility, and font application verified |
 | 0.2.0-rc.2 | Plugin load, inventory visibility, and font application verified |
 | 0.2.1-alpha.1 | Plugin load, inventory visibility, and font application verified; E2E re-verified against current main 566a1b7 on 2026-10-07: clean plugin load, Settings rows visible, zero console errors, local-font permission granted then 107 PC fonts listed, UI and code fonts applied and restored after reload, and reset to defaults verified |
-| 0.2.1-alpha.2 | Declared in `engines.dsh`; source-level compatibility reviewed, but plugin load, font application, persistence, and reset have **not** been runtime-verified on this version |
-| 0.2.1-alpha.3 | Plugin load, inventory visibility, and font application verified; E2E re-verified against DSH 0.2.1-alpha.3 on 2026-10-15: clean plugin load, Settings rows visible, zero console errors, local-font permission granted then 107 PC fonts listed matching the 107 datalist options, UI font Georgia and code font Consolas applied through the Theme/Slot APIs, settings restored after reload, and reset to defaults verified |
+| 0.2.1-alpha.2 | `engines.dsh` requires the core font-family settings added in this version; core-delegation behavior has **not** been runtime-verified on this version |
+| 0.2.1-alpha.3 | 0.3.0 core-delegation behavior verified: plugin load, font settings rows, core apply, persistence across reload, and defaults restore |
 
-DSH **0.2.1-alpha.2** adds built-in font-family settings. Interaction between the built-in settings and this plugin's Theme token overrides remains **untested**; competing settings may produce confusing display results. Other newer DSH versions are not assumed compatible until verified.
+DSH **0.2.1-alpha.2** added built-in font-family settings. Since 0.3.0 this plugin writes exactly those core settings, so no competing plugin-side state remains; earlier plugin releases (0.1.x–0.2.x) kept their own overrides in parallel and were never verified against the built-in settings. Other newer DSH versions are not assumed compatible until verified.
 
 ## Install
 
@@ -49,8 +51,8 @@ Restart DSH Web after installation.
 Open **Settings → General → Fonts**.
 
 - Use **Load PC fonts** to request access to the browser's local font list.
-- Select or type an installed font family for the UI font and code font.
-- Use **Reset to default** to remove the overrides and stored selections.
+- Select or type an installed font family for the UI font and code font; the value is written to the DSH built-in font settings and stays in sync with the built-in font rows.
+- Use **Reset to default** to hand both roles back to the built-in font list.
 
 Button and status labels follow the copy language described above: the English list shows **Load PC fonts**, Japanese shows **PCフォントを読み込む**, and the same applies to the rest of the row.
 
@@ -65,12 +67,13 @@ This plugin:
 - does not read or copy font files;
 - does not upload font data;
 - does not make network requests;
-- stores only the selected font family names in `localStorage`, scoped to the current browser origin.
+- stores no settings of its own — selected font family names are persisted by the DSH core settings, not by plugin-managed `localStorage`.
 
 ## Limitations
 
 - Local Font Access is primarily available in Chromium-based desktop browsers. Other browsers can still use manual font-name entry.
-- Settings are stored per browser origin.
+- Font settings live in the DSH core settings and are shared with the built-in font rows; this plugin adds no separate storage.
+- Requires DSH **0.2.1-alpha.2** or newer — the core font-family settings the plugin delegates to were added there.
 - DSH is still evolving rapidly, so client extension contracts can change between prerelease versions.
 - The copy language is decided once when the row module loads. Changing the browser's preferred languages takes effect on the next page reload.
 

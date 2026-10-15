@@ -13,7 +13,6 @@ window.__ModuleLoader__.load({
       require("@deepseek-ai/dsh-client-store");
 
     const PLUGIN_ID = "dsh-local-font-picker";
-    const STORAGE_KEY = "dsh-local-font-picker:v1";
     const FONT_LIST_ID = "dsh-local-font-picker-list";
 
     // The plugin renders its own copy, so it picks a language from the browser
@@ -104,12 +103,6 @@ window.__ModuleLoader__.load({
 
     const COPY_STRINGS = pickCopy();
 
-    const UI_FALLBACK =
-      '"Yu Gothic UI", Meiryo, "Noto Sans JP", "Segoe UI", sans-serif';
-
-    const CODE_FALLBACK =
-      '"Cascadia Mono", Consolas, "BIZ UDGothic", "Yu Gothic UI", monospace';
-
     function cleanFamily(value) {
       if (typeof value !== "string") return "";
 
@@ -117,62 +110,6 @@ window.__ModuleLoader__.load({
         .replace(/[\u0000-\u001f\u007f]/g, "")
         .trim()
         .slice(0, 160);
-    }
-
-    function quoteFamily(value) {
-      return `"${value
-        .replace(/\\/g, "\\\\")
-        .replace(/"/g, '\\"')}"`;
-    }
-
-    function uiStack(family) {
-      return `${quoteFamily(family)}, ${UI_FALLBACK}`;
-    }
-
-    function codeStack(family) {
-      return `${quoteFamily(family)}, ${CODE_FALLBACK}`;
-    }
-
-    function same(value) {
-      return {
-        light: value,
-        dark: value
-      };
-    }
-
-    function readPrefs() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-
-        if (!raw) {
-          return { ui: "", code: "" };
-        }
-
-        const value = JSON.parse(raw);
-
-        return {
-          ui: cleanFamily(value.ui),
-          code: cleanFamily(value.code)
-        };
-      } catch {
-        return { ui: "", code: "" };
-      }
-    }
-
-    function writePrefs(ui, code) {
-      try {
-        if (!ui && !code) {
-          localStorage.removeItem(STORAGE_KEY);
-          return;
-        }
-
-        localStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify({ ui, code })
-        );
-      } catch {
-        // Storage failure must not break the UI.
-      }
     }
 
     async function loadLocalFonts() {
@@ -318,7 +255,6 @@ window.__ModuleLoader__.load({
 
     function FontInput({
       label,
-      value,
       draft,
       setDraft,
       families,
@@ -454,7 +390,6 @@ window.__ModuleLoader__.load({
 
           jsx(FontInput, {
             label: COPY_STRINGS.uiLabel,
-            value: ui,
             draft: uiDraft,
             setDraft: setUiDraft,
             families,
@@ -463,7 +398,6 @@ window.__ModuleLoader__.load({
 
           jsx(FontInput, {
             label: COPY_STRINGS.codeLabel,
-            value: code,
             draft: codeDraft,
             setDraft: setCodeDraft,
             families,
@@ -475,9 +409,7 @@ window.__ModuleLoader__.load({
             children: [
               jsx("div", {
                 style: {
-                  fontFamily: ui
-                    ? uiStack(ui)
-                    : undefined,
+                  fontFamily: ui || undefined,
                   fontSize: "16px",
                   lineHeight: "26px",
                   color:
@@ -488,9 +420,7 @@ window.__ModuleLoader__.load({
 
               jsx("code", {
                 style: {
-                  fontFamily: code
-                    ? codeStack(code)
-                    : undefined,
+                  fontFamily: code || undefined,
                   fontSize: "13px",
                   lineHeight: "20px",
                   color:
@@ -527,71 +457,21 @@ window.__ModuleLoader__.load({
     ];
 
     function apply(ctx) {
+      const theme = ctx.theme;
       const fontPickerStore = createFontPickerStore();
-      let prefs = readPrefs();
-      let revision = 0;
       let bound;
-      let releaseOverride = () => {};
 
-      const sync = () => {
-        revision += 1;
+      // The core owns font state; mirror its snapshot so this row and the
+      // built-in font settings can never drift apart.
+      const sync = (snapshot) => {
         bound?.sync(
-          prefs.ui,
-          prefs.code,
-          revision
+          snapshot.fontFamilies.text,
+          snapshot.fontFamilies.code,
+          snapshot.revision
         );
       };
 
-      const applyOverride = () => {
-        const tokens = {};
-
-        if (prefs.ui) {
-          tokens["--dsw-font-family"] =
-            same(uiStack(prefs.ui));
-        }
-
-        if (prefs.code) {
-          const stack = codeStack(prefs.code);
-
-          tokens["--ds-font-family-code"] =
-            same(stack);
-
-          tokens["--dsw-font-mono"] =
-            same(stack);
-        }
-
-        const nextRelease =
-          Object.keys(tokens).length > 0
-            ? ctx.theme.overrideTokens(
-                PLUGIN_ID,
-                tokens
-              )
-            : () => {};
-
-        releaseOverride();
-        releaseOverride = nextRelease;
-      };
-
-      const update = (field, value) => {
-        const family = cleanFamily(value);
-
-        prefs = {
-          ...prefs,
-          [field]: family
-        };
-
-        writePrefs(prefs.ui, prefs.code);
-        applyOverride();
-        sync();
-      };
-
-      ctx.effect(() => {
-        applyOverride();
-
-        return () => {
-          releaseOverride();
-        };
-      }, "dsh-local-font-picker: theme override");
+      ctx.on("theme/change", sync);
 
       ctx.slots.inject(
         "settings.general.item",
@@ -605,24 +485,16 @@ window.__ModuleLoader__.load({
 
               inject: (actions) => {
                 bound = actions;
-                sync();
+                sync(theme.getTheme());
 
                 return {
-                  setUi: (value) =>
-                    update("ui", value),
+                  setUi: (value) => theme.setFontFamily("text", value),
 
-                  setCode: (value) =>
-                    update("code", value),
+                  setCode: (value) => theme.setFontFamily("code", value),
 
                   reset: () => {
-                    prefs = {
-                      ui: "",
-                      code: ""
-                    };
-
-                    writePrefs("", "");
-                    applyOverride();
-                    sync();
+                    theme.setFontFamily("text", "");
+                    theme.setFontFamily("code", "");
                   }
                 };
               }
