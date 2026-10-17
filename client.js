@@ -21,8 +21,8 @@ window.__ModuleLoader__.load({
     const COPY = {
       ja: {
         placeholder: "既定フォント",
-        directInputHelp: "PC内フォント名を直接入力することもできます",
-        fetchingFonts: "PC内フォントを取得しています…",
+        directInputHelp: "PC内のフォント名を直接入力することもできます",
+        fetchingFonts: "PC内のフォントを取得しています…",
         loadedFonts: (count) =>
           `${count}種類のフォントを読み込みました。`,
         notAllowed:
@@ -37,7 +37,7 @@ window.__ModuleLoader__.load({
         codePreview:
           'const deepseek = "Harness"; // 日本語 012345',
         resetButton: "既定に戻す",
-        hint: "一覧取得にはブラウザの許可が必要です。フォント名の直接入力にも対応します。",
+        hint: "フォント一覧の取得にはブラウザの許可が必要です。フォント名を直接入力することもできます。",
         secureContextRequired:
           "Local Font Access APIにはSecure Contextが必要です。",
         apiUnsupported:
