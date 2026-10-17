@@ -20,7 +20,7 @@ The host entry (`index.js`) is intentionally a no-op. All behavior runs in the W
 
 Since **0.3.0** this plugin delegates font state to the DSH core (`ctx.theme.setFontFamily`); it stores nothing of its own. Earlier plugin releases kept their own copy in `localStorage` plus Theme token overrides. The table records runtime verification per listed state; rows up to 0.2.1-alpha.1 were recorded on the pre-0.3.0 mechanism.
 
-Latest DSH version with recorded runtime verification: **0.2.1-alpha.3**, runtime-verified against the live app on 2026-10-15.
+Latest DSH version with recorded runtime verification: **0.2.1-rc.1**, runtime-verified against the live app on 2026-10-17.
 
 | DSH version | Verification |
 | --- | --- |
@@ -33,6 +33,7 @@ Latest DSH version with recorded runtime verification: **0.2.1-alpha.3**, runtim
 | 0.2.1-alpha.1 | Plugin load, inventory visibility, and font application verified; E2E re-verified against current main 566a1b7 on 2026-10-07: clean plugin load, Settings rows visible, zero console errors, local-font permission granted then 107 PC fonts listed, UI and code fonts applied and restored after reload, and reset to defaults verified |
 | 0.2.1-alpha.2 | `engines.dsh` requires the core font-family settings added in this version; core-delegation behavior has **not** been runtime-verified on this version |
 | 0.2.1-alpha.3 | 0.3.0 core-delegation behavior verified: plugin load, font settings rows, core apply, persistence across reload, and defaults restore |
+| 0.2.1-rc.1 | Covered by the existing `engines.dsh` range (no manifest change); `npm run check` passing on 2026-10-17; the 0.3.0 core-delegation behavior re-verified on the live web UI the same day: plugin load, settings rows, 107 PC fonts listed under a granted Local Font Access permission, UI and code font application with restore after reload, reset to defaults, zero page errors; stored-and-echoed code-font values carry the quotes the DSH core ui-theme setting keeps |
 
 DSH **0.2.1-alpha.2** added built-in font-family settings. Since 0.3.0 this plugin writes exactly those core settings, so no competing plugin-side state remains; earlier plugin releases (0.1.x–0.2.x) kept their own overrides in parallel and were never verified against the built-in settings. Upgrading from a pre-0.3.0 release does not migrate the old copy automatically: the plugin stops reading its `localStorage` state and no longer installs Theme token overrides, so fonts show whatever the core font settings hold (the defaults after a clean upgrade) until you select a font family once in the settings row. The browser-stored entry older releases left behind is no longer read; removing it is optional and changes nothing else. Other newer DSH versions are not assumed compatible until verified.
 
