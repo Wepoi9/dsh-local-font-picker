@@ -15,7 +15,7 @@ DeepSeek Harness（DSH）Web UI 用のコミュニティプラグインです。
 
 **0.3.0** 以降、フォントの状態管理は DSH 本体（`ctx.theme.setFontFamily`）に委譲し、プラグイン側では保持しません。それ以前のリリースでは、`localStorage` と Theme トークンの上書きによって独自に状態を保持していました。表は各バージョンでの実機検証記録であり、0.2.1-alpha.1 までの記録は 0.3.0 以前の仕組みに基づいています。
 
-記録上の最新の実機動作確認は **DSH 0.2.2-alpha.2**（2026-10-29）です。前の対応版 **0.2.1-rc.2** は 2026-10-17 に確認しました。
+記録上の最新の実機動作確認（設定行表示とフォント適用）は **DSH 0.2.2-alpha.2**（2026-10-29）です。前の対応版 **0.2.1-rc.2** は 2026-10-17 に確認しました。**0.2.2-rc.1** は宣言済み範囲に含まれ、下表の読み込み経路の記録を持つが、対話操作の再確認は未実施です。
 
 | DSH バージョン | 確認内容 |
 | --- | --- |
@@ -31,6 +31,7 @@ DeepSeek Harness（DSH）Web UI 用のコミュニティプラグインです。
 | 0.2.1-rc.1 | 既存の `engines.dsh` 範囲で包含（manifest 変更なし）。`npm run check` 通過（2026-10-17）。0.3.0 の本体委譲動作を同じ日の実機 Web UI で再確認: plugin load、設定行表示、Local Font Access 許可後のPCフォント107件取得、UI/コードフォント双方の反映とリロード後の復元、既定復帰、page error 0件。コードフォントの保存・表示値に引用符が付くのは DSH 本体 ui-theme 設定が保持する値そのもの |
 | 0.2.1-rc.2 | 既存の `engines.dsh` 範囲で包含（manifest 変更なし）。`npm run check` 通過（2026-10-17）。0.3.0 の本体委譲動作を同じ日の実機 Web UI で再確認: plugin load、設定行表示、Local Font Access 許可後のPCフォント107件取得、UIフォント `"Meiryo UI"` / コードフォント `"Consolas"` の反映とリロード後の復元、既定復帰、page error 0件 |
 | 0.2.2-alpha.2 | 既存の `engines.dsh` 範囲に含まれる（manifest 変更なし）。2026-10-29 に alpha.2 runtime で実機確認: plugin 読み込みと設定行表示、UIフォント `"Meiryo UI"` とコードフォント `"Consolas"` の適用（UI preview の計算後 font-family を確認）、再読み込み後の復元、既定値へのリセット。スクリプトブラウザでは Local Font Access に `Page needs to be visible` と返されたため一覧の再取得は未実施（permission と API の存在は確認済み）。一覧取得の検証記録は 0.2.1-rc.2 まで |
+| 0.2.2-rc.1 | 既存の `engines.dsh` 範囲に含まれる（manifest 変更なし）。2026-11-05 に `npm run check` 通過。同日のクライアント再編（挙動を変えない整理）は、stub の module loader で slot 登録・本体フォント設定への委譲・revision guard・copy 言語選択・制御文字除去を含むローカルフォント列挙を検証。0.2.2-rc.1 の Web profile は plugin 互換性警告なしで起動する。ブラウザ実機でのフォント適用と PC フォント一覧取得はこの版で再実施していない |
 
 **重要な注意点**:
 DSH **0.2.1-alpha.2** で本体にフォント指定機能が追加されました。0.3.0 以降はこの本体設定そのものを書き込むため、プラグイン側には競合する状態が残りません。
